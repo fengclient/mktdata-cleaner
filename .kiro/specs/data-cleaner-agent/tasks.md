@@ -158,74 +158,17 @@
   - Provide troubleshooting hints for common errors
   - _Requirements: 7.4_
 
-## Phase 5: Documentation
+## Phase 5: Documentation and Finalization
 
-- [ ] 6. Update documentation
-  - Update README.md with new architecture explanation
+- [ ] 6. Complete project documentation
+  - Update README.md with architecture overview, installation steps, and usage instructions
+  - Ensure .env.example is complete with all required variables
   - _Requirements: 8.1, 8.2, 8.3, 8.4, 8.5_
 
-- [ ] 6.1 Document architecture
-  - Explain workflow-based architecture
-  - Describe three-phase process (analyze, escalate, finalize)
-  - Explain separation of concerns (prompts vs workflow)
-  - _Requirements: 8.1_
-
-- [ ] 6.2 Document prerequisites and installation
-  - List Python 3.9+ requirement
-  - Specify Strands Agents SDK version
-  - Document virtual environment setup (python -m venv venv, source venv/bin/activate)
-  - Provide pip install command for requirements.txt
-  - _Requirements: 8.1_
-
-- [ ] 6.3 Document configuration
-  - Explain OPENAI_API_KEY environment variable
-  - Explain optional OPENAI_BASE_URL for compatible APIs
-  - Explain optional MODEL_NAME and TEMPERATURE variables
-  - Provide .env.example file reference
-  - _Requirements: 8.2_
-
-- [ ] 6.4 Document usage instructions
-  - Provide exact command to launch: python clean_data.py
-  - Describe expected greeting in Chinese
-  - Explain filename input (relative to repo root)
-  - Describe three-phase workflow execution
-  - Specify output file location and naming convention ({original}_cleaned.csv)
-  - _Requirements: 8.3, 8.4, 8.5_
-
-- [ ] 6.5 Add workflow diagram
-  - Create visual representation of three-step workflow
-  - Show data flow between steps
-  - Illustrate loop for escalations
-  - _Requirements: 8.1_
-
-## Phase 6: Testing & Packaging
-
-- [-] 7. Create test suite
-  - Create tests/ directory
-  - _Requirements: Testing strategy from design.md_
-
-- [x] 7.1 Unit tests for tools
-  - Test load_csv with valid/invalid files
-  - Test get_row with valid/invalid row numbers
-  - Test update_row with valid/invalid updates
-  - Test save_csv with various scenarios
-  - _Requirements: Tool validation_
-
-- [ ] 7.2 Integration tests for workflow
-  - Test auto-fix only scenario (no escalations)
-  - Test escalation required scenario
-  - Test mixed scenario (auto-fix + escalations)
-  - Test error handling (missing file, invalid data)
+- [ ]* 6.1 Add integration tests
+  - Create tests for end-to-end workflows (auto-fix only, escalations, mixed scenarios)
   - _Requirements: End-to-end validation_
 
-- [ ] 7.3 Prompt validation tests
-  - Verify ANALYZE_AND_FIX_PROMPT produces correct output structure
-  - Verify ESCALATION_HANDLER_PROMPT handles user input correctly
-  - Verify FINALIZE_PROMPT generates proper summary
-  - _Requirements: Prompt correctness_
-
-- [ ] 8. Create packaging script
-  - Create package.sh script to generate submission zip
-  - Include all source code, requirements.txt, .env.example, README.md
-  - Exclude .git, __pycache__, .env, and other non-essential files
+- [ ]* 6.2 Create packaging script
+  - Create script to generate submission package with all necessary files
   - _Requirements: 8.1_
