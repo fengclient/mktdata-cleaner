@@ -1,0 +1,15 @@
+name,gender,title,email,mobile,wechat,remark
+张三,男孩,财务经理,san.zhang@example.com,13812345679,wechat123,正常备注
+李四,女孩,工程师,lisi@example.com,13987654321,wechat456,
+王五,未知,产品经理,wangwu@example.com,13611112222,wechat789,
+赵六,男,工程师,zhaoliu@example.com,138-2222-3333,,无微信
+周八,男孩,销售代表,zhouba@example.com,13344445555,wechat999,
+吴九,女孩,运营专员,wujiu@example.com,13255556666,wechat000,备注信息
+郑十,未知,测试工程师,zhengshi@example.com,13166667777,wechat111,
+钱一,男性,市场经理,qianyi@example.com,0086-135-6666-7777,qianyi_wx,
+刘二,女性,行政助理,liuer@example.com,136  7777  8888,liuer_wechat,
+陈三,不详,软件开发工程师,chensan@example.com,(137)8888-9999,chensan123,
+杨四,M,高级工程师,yangsi@example.com,13899990000,yangsi_wx,技术专家
+林六,male,数据分析师,linliu@example.com,13911112222,linliu_wechat,
+何七,female,市场专员,heqi@example.com,13922223333,,市场推广
+罗八,未填写,销售经理,luoba@example.com,13933334444,luoba_wx,

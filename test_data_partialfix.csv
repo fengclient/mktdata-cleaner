@@ -1,0 +1,4 @@
+﻿name,gender,title,email,mobile,wechat,remark
+,女,财务经理,valid1@example.com,13812345678,wechatABC,
+李四,男,未知职位,invalid-email,11111111111,wechatABC,
+张三,男孩,财务经理,san.zhang@example.com,13812345679,wechatABC,

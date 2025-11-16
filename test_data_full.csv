@@ -1,0 +1,12 @@
+﻿name,gender,title,email,mobile,wechat,remark
+,女,财务经理,valid1@example.com,13812345678,wechatABC,
+张三,男孩,财务经理,san.zhang@example.com,13812345679,wechatABC,
+李四,男,未知职位,invalid-email,11111111111,wechatABC,
+王五,未知,工程师,,,123abc,
+赵六,男,工程师,,,,
+李丹,男,CEO,,,不合法的微信,
+王散,男,CTO,,13787651234,不要加微信，直接电话联系,
+克勤,女,HR,,,同手机,
+我不是一个正儿八经的名字,未知,Intern,,021-35426785,,
+John,男,Engineer,a@b.com; b@c.com,,john_wechat00787,
+Joe,男,Engineer,joe3@example.com,"18916754563, wx_joe19981203",,
