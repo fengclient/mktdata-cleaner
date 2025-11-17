@@ -81,12 +81,28 @@ python clean_data.py
 # 直接指定文件（全自动修复场景）
 python clean_data.py test_data_autofix.csv
 
-# 显示详细日志
+# 显示详细日志（INFO 级别）
 python clean_data.py test_data_autofix.csv -v
+# 或
+python clean_data.py test_data_autofix.csv -v=info
+
+# 显示调试日志（DEBUG 级别）
+python clean_data.py test_data_autofix.csv -v=debug
 
 # 启用可观测性追踪
 python clean_data.py test_data_autofix.csv -o
+
+# 组合使用多个选项
+python clean_data.py test_data_autofix.csv -v=debug -o
 ```
+
+### 命令行选项
+
+- `filename`：CSV 文件路径（可选，如果不提供会进入交互模式）
+- `-v, --verbose [LEVEL]`：显示详细日志
+  - 不带参数或 `-v=info`：INFO 级别日志
+  - `-v=debug`：DEBUG 级别日志（显示最详细的信息）
+- `-o, --observability`：启用 OpenTelemetry 追踪（需要配置 `OTEL_EXPORTER_OTLP_ENDPOINT`）
 
 ### 工作流程
 
