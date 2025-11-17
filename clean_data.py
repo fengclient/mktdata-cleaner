@@ -26,7 +26,7 @@ import pandas as pd
 load_dotenv()
 
 # Import workflow execution function
-from src.graph_workflow import create_data_cleaning_graph, setup_observability
+from src.graph_workflow import create_data_cleaning_graph
 
 # Logger will be configured in main() based on command line arguments
 logger = logging.getLogger(__name__)
@@ -288,15 +288,21 @@ def main():
         parser = argparse.ArgumentParser(
             description='数据清洗助手 - 清理CSV文件中的联系人数据',
             formatter_class=argparse.RawDescriptionHelpFormatter,
-            epilog="示例:\n  python clean_data.py test_data.csv\n  python clean_data.py test_data.csv -v\n  python clean_data.py test_data.csv -o"
+            epilog="示例:\n  python clean_data.py test_data.csv\n  python clean_data.py test_data.csv -v\n  python clean_data.py test_data.csv -v=debug\n  python clean_data.py test_data.csv -o"
         )
         parser.add_argument('filename', nargs='?', help='CSV文件路径')
-        parser.add_argument('-v', '--verbose', action='store_true', help='显示详细日志（INFO级别）')
+        parser.add_argument('-v', '--verbose', nargs='?', const='info', default=None, choices=['info', 'debug'], help='显示详细日志（-v 或 -v=info 为INFO级别，-v=debug 为DEBUG级别）')
         parser.add_argument('-o', '--observability', action='store_true', help='启用可观测性追踪（需要配置 OTEL_EXPORTER_OTLP_ENDPOINT）')
         args = parser.parse_args()
         
         # 配置日志级别
-        log_level = logging.INFO if args.verbose else logging.WARNING
+        if args.verbose == 'debug':
+            log_level = logging.DEBUG
+        elif args.verbose == 'info':
+            log_level = logging.INFO
+        else:
+            log_level = logging.WARNING
+        
         logging.basicConfig(
             level=log_level,
             format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
@@ -312,7 +318,9 @@ def main():
             otlp_endpoint = os.getenv("OTEL_EXPORTER_OTLP_ENDPOINT")
             if otlp_endpoint:
                 print(f"\n✓ 可观测性已启用: {otlp_endpoint}\n")
-                setup_observability(otlp_endpoint)
+                from strands.telemetry import StrandsTelemetry
+                strands_telemetry = StrandsTelemetry()
+                strands_telemetry.setup_otlp_exporter()
             else:
                 print("\n警告：未配置 OTEL_EXPORTER_OTLP_ENDPOINT，可观测性未启用\n")
         
@@ -356,6 +364,24 @@ def main():
         
         graph_result = graph(initial_task, invocation_state=shared_state)
         logger.info(f"工作流完成: {' -> '.join([n.node_id for n in graph_result.execution_order])}")
+        logger.info(f"Graph result - total_nodes: {graph_result.total_nodes}")
+        logger.info(f"Graph result - completed_nodes: {graph_result.completed_nodes}")
+        logger.info(f"Graph result - failed_nodes: {graph_result.failed_nodes}")
+        logger.info(f"Graph result - execution_count: {graph_result.execution_count}")
+        logger.info(f"Graph result - execution_time: {graph_result.execution_time:.2f}s")
+        logger.info(f"Graph result - status: {graph_result.status}")
+        
+        # 打印每个节点的详细信息
+        logger.info(f"Graph result - results keys: {list(graph_result.results.keys())}")
+        for node_name, node_result in graph_result.results.items():
+            logger.info(f"  Node '{node_name}':")
+            logger.info(f"    - status: {node_result.status}")
+            logger.info(f"    - execution_time: {node_result.execution_time:.2f}s")
+            if hasattr(node_result, 'result') and node_result.result:
+                result = node_result.result
+                logger.info(f"    - result.stop_reason: {result.stop_reason if hasattr(result, 'stop_reason') else 'N/A'}")
+                if hasattr(result, 'structured_output') and result.structured_output:
+                    logger.info(f"    - has structured_output: {type(result.structured_output).__name__}")
         
         # ========== 4. 检查 shared_state 一致性并合并结果 ==========
         analyzer_output = shared_state.get('analyzer_output', {})

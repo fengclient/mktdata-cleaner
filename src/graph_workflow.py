@@ -57,10 +57,8 @@ architecture with validation loops for iterative data quality improvement.
 import os
 import json
 import logging
-from typing import Dict, Any, Optional
 from strands import Agent
 from strands.models.openai import OpenAIModel
-from strands.telemetry import StrandsTelemetry
 from strands.agent.agent_result import AgentResult
 from strands.multiagent import GraphBuilder, MultiAgentBase, MultiAgentResult
 from strands.multiagent.base import NodeResult, Status
@@ -79,16 +77,6 @@ from src.models import AnalyzerResult, HandlerResult
 
 # Import handoff_to_user for human-in-the-loop interactions
 from strands_tools import handoff_to_user
-
-
-def setup_observability():
-    """Setup observability with OTLP and console exporters."""
-    strands_telemetry = StrandsTelemetry()
-    strands_telemetry.setup_otlp_exporter()
-    strands_telemetry.setup_meter(
-        enable_console_exporter=False,
-        enable_otlp_exporter=True
-    )
 
 
 class EscalationRouter(MultiAgentBase):
@@ -157,30 +145,6 @@ class EscalationRouter(MultiAgentBase):
             execution_count=1,
             execution_time=10
         )
-    
-    def _parse_json_from_text(self, text: str) -> Optional[Dict[str, Any]]:
-        """Parse JSON from text, handling various formats."""
-        try:
-            return json.loads(text)
-        except json.JSONDecodeError:
-            import re
-            # Try to find JSON in code blocks
-            json_match = re.search(r'```(?:json)?\s*(\{.*?\})\s*```', text, re.DOTALL)
-            if json_match:
-                try:
-                    return json.loads(json_match.group(1))
-                except json.JSONDecodeError:
-                    pass
-            
-            # Try to find JSON object in the text
-            json_match = re.search(r'\{[^{}]*(?:\{[^{}]*\}[^{}]*)*\}', text, re.DOTALL)
-            if json_match:
-                try:
-                    return json.loads(json_match.group(0))
-                except json.JSONDecodeError:
-                    pass
-        
-        return None
 
 
 def create_data_cleaning_graph(
@@ -478,8 +442,8 @@ def create_data_cleaning_graph(
     
     # Configure graph
     builder.set_entry_point("analyzer")
-    builder.set_max_node_executions(500)  # Allow more iterations for multiple escalations
-    builder.set_execution_timeout(600)  # Longer timeout for user interactions
+    # builder.set_max_node_executions(500)  # Allow more iterations for multiple escalations
+    # builder.set_execution_timeout(600)  # Longer timeout for user interactions
     builder.reset_on_revisit(False)  # Don't reset state when revisiting router
     
     # Build the graph
@@ -489,29 +453,4 @@ def create_data_cleaning_graph(
     return graph, shared_state
 
 
-# Backward compatibility: keep the old function name
-def create_data_cleaning_agent(
-    model: str = None,
-    temperature: float = None,
-    api_key: str = None,
-    base_url: str = None,
-    session_id: str = None,
-    user_id: str = None
-):
-    """
-    Create a data cleaning workflow (backward compatibility wrapper).
-    
-    This function now returns a graph instead of a single agent,
-    but maintains the same interface for backward compatibility.
-    """
-    return create_data_cleaning_graph(
-        model=model,
-        temperature=temperature,
-        api_key=api_key,
-        base_url=base_url,
-        session_id=session_id,
-        user_id=user_id
-    )
-
-
-__all__ = ['create_data_cleaning_agent', 'create_data_cleaning_graph', 'EscalationRouter']
+__all__ = ['create_data_cleaning_graph', 'EscalationRouter']
